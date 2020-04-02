@@ -21,6 +21,7 @@ import throttle from 'lodash/throttle'
 import chunk from 'lodash/chunk'
 import {globalMargins} from '../../../styles/shared'
 import {memoize} from '../../../util/memoize'
+import UnreadShortcut from './unread-shortcut'
 
 // hot reload isn't supported with debouncing currently so just ignore hot here
 if (module.hot) {
@@ -129,6 +130,24 @@ class Thread extends React.PureComponent<Props, State> {
       const list = this.listRef.current
       if (list) {
         this.logAll(list, `scrollToBottom(${reason})`, () => {
+          this.adjustScrollAndIgnoreOnScroll(() => {
+            list.scrollTop = list.scrollHeight - list.clientHeight
+          })
+        })
+      }
+    }
+
+    actuallyScroll()
+    setTimeout(() => {
+      requestAnimationFrame(actuallyScroll)
+    }, 1)
+  }
+
+  private scrollToLastMessage = () => {
+    const actuallyScroll = () => {
+      const list = this.listRef.current
+      if (list) {
+        this.logAll(list, `scrollToLastMessage()`, () => {
           this.adjustScrollAndIgnoreOnScroll(() => {
             list.scrollTop = list.scrollHeight - list.clientHeight
           })
@@ -522,6 +541,8 @@ class Thread extends React.PureComponent<Props, State> {
               {items}
             </div>
           </div>
+          TEST123
+          <UnreadShortcut onClick={this.scrollToLastMessage}/>
           {!this.props.containsLatestMessage && this.props.messageOrdinals.length > 0 && (
             <JumpToRecent onClick={this.jumpToRecent} style={styles.jumpToRecent} />
           )}
