@@ -143,22 +143,20 @@ class Thread extends React.PureComponent<Props, State> {
     }, 1)
   }
 
-  private scrollToLastMessage = () => {
-    const actuallyScroll = () => {
-      const list = this.listRef.current
-      if (list) {
-        this.logAll(list, `scrollToLastMessage()`, () => {
-          this.adjustScrollAndIgnoreOnScroll(() => {
-            list.scrollTop = list.scrollHeight - list.clientHeight
-          })
-        })
-      }
-    }
 
-    actuallyScroll()
-    setTimeout(() => {
-      requestAnimationFrame(actuallyScroll)
-    }, 1)
+  private scrollToUnread = () => {
+    console.log('here')
+    const list = this.listRef.current
+    if (list) {
+      console.log(list)
+      this.logAll(list, `scrollToCentered()`, () => {
+        // grab the waypoint we made for the centered ordinal and scroll to it
+        const scrollWaypoint = list.querySelectorAll(`[data-key=scrollToFirst]`)
+        if (scrollWaypoint.length > 0) {
+          scrollWaypoint[0].scrollIntoView({block: 'center', inline: 'nearest'})
+        }
+      })
+    }
   }
 
   private scrollDown = () => {
@@ -541,8 +539,7 @@ class Thread extends React.PureComponent<Props, State> {
               {items}
             </div>
           </div>
-          TEST123
-          <UnreadShortcut onClick={this.scrollToLastMessage}/>
+          <UnreadShortcut onClick={this.scrollToUnread}/>
           {!this.props.containsLatestMessage && this.props.messageOrdinals.length > 0 && (
             <JumpToRecent onClick={this.jumpToRecent} style={styles.jumpToRecent} />
           )}
