@@ -15,9 +15,9 @@ const UnreadShortcut = (props: Props) => (
       fullWidth={true}
       style={styles.unreadShortcut}
     >
-      <Kb.Icon type="iconfont-arrow-down" sizeType="Small" color={Styles.globalColors.white} />
+      <Kb.Icon type="iconfont-arrow-up" sizeType="Small" color={Styles.globalColors.white} />
       <Kb.Text negative={true} type="BodySmallSemibold">
-        Unread messages
+        Scroll to first unread
       </Kb.Text>
     </Kb.Box2>
   </Kb.ClickableBox>

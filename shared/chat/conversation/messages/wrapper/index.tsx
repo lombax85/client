@@ -135,14 +135,18 @@ class _WrapperMessage extends React.Component<Props & Kb.OverlayParentProps, Sta
   private dismissKeyboard = () => dismissKeyboard()
   private orangeLine = () =>
     this.props.orangeLineAbove && (
-      <Kb.Box2
-        key="orangeLine"
-        direction="vertical"
-        style={Styles.collapseStyles([
-          styles.orangeLine,
-          !this.props.showUsername && styles.orangeLineCompensationLeft,
-        ])}
-      />
+        <>
+          <Kb.Box2
+            key="orangeLine"
+            direction="vertical"
+            style={Styles.collapseStyles([
+              styles.orangeLine,
+              !this.props.showUsername && styles.orangeLineCompensationLeft,
+            ])}
+          />
+          <hr data-key="scrollToFirst" />
+        </>
+
     )
   private onAuthorClick = () => this.props.onAuthorClick()
   private isExploding = () =>
