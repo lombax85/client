@@ -34,11 +34,11 @@ const styles = Styles.styleSheetCreate(
       },
       unreadShortcut: Styles.platformStyles({
         common: {
-          backgroundColor: Styles.globalColors.black,
+          backgroundColor: Styles.globalColors.black_50,
           paddingBottom: Styles.globalMargins.tiny,
           paddingTop: Styles.globalMargins.tiny,
         },
-        isElectron: {height: 32},
+        isElectron: {height: 16},
         isMobile: {height: 40},
       }),
     } as const)
