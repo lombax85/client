@@ -17,6 +17,7 @@ Run within the `shared/` directory.
 
 ```sh
 yarn modules
+yarn --check-files
 ```
 Which is just an alias to run `yarn install --pure-lockfile --ignore-optional`. 
 
