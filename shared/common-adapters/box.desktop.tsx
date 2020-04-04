@@ -60,6 +60,7 @@ const _Box2 = (props: Box2Props, ref: React.Ref<HTMLDivElement>) => {
 
   return (
     <div
+      {...props}
       ref={ref}
       onDragLeave={onDragLeave}
       onDragOver={onDragOver}
