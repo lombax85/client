@@ -150,28 +150,30 @@ class Thread extends React.PureComponent<Props, State> {
     if (list) {
       console.log(list)
       this.logAll(list, `scrollToCentered()`, () => {
+        const maxAttempts = 20;
+        const loadInterval = 500;
+        var attempts = 0;
 
-      const maxAttempts = 20;
-      const loadInterval = 500;
-      var attempts = 0;
-      var interval = setInterval(() => {
-        // grab the waypoint we made for the centered ordinal and scroll to it
         const scrollWaypoint = list.querySelectorAll(`[data-key=scrollToFirst]`)
         if (scrollWaypoint.length > 0) {
           scrollWaypoint[0].scrollIntoView({block: 'center', inline: 'nearest'})
-          clearInterval(interval);
         } else {
-          if (attempts >= maxAttempts) {
-            clearInterval(interval);
-            console.log('Max Attempts reached')
-          }
-          this.props.loadOlderMessages();
-          attempts++;
+          var interval = setInterval(() => {
+            // grab the waypoint we made for the centered ordinal and scroll to it
+            const scrollWaypoint = list.querySelectorAll(`[data-key=scrollToFirst]`)
+            if (scrollWaypoint.length > 0) {
+              scrollWaypoint[0].scrollIntoView({block: 'center', inline: 'nearest'})
+              clearInterval(interval);
+            } else {
+              if (attempts >= maxAttempts) {
+                clearInterval(interval);
+                console.log('Max Attempts reached')
+              }
+              this.props.loadOlderMessages();
+              attempts++;
+            }
+          }, loadInterval);
         }
-      }, loadInterval);
-
-
-
       })
     }
   }
