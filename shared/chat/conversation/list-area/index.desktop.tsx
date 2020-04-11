@@ -22,6 +22,7 @@ import chunk from 'lodash/chunk'
 import {globalMargins} from '../../../styles/shared'
 import {memoize} from '../../../util/memoize'
 import UnreadShortcut from './unread-shortcut'
+import {numberToMessageID} from "../../../constants/types/chat2";
 
 // hot reload isn't supported with debouncing currently so just ignore hot here
 if (module.hot) {
@@ -145,6 +146,11 @@ class Thread extends React.PureComponent<Props, State> {
 
 
   private scrollToUnread = () => {
+    console.log('scrollToUnread')
+    this.props.loadExample()
+
+    return;
+/*
     console.log('here')
     const list = this.listRef.current
     if (list) {
@@ -173,6 +179,8 @@ class Thread extends React.PureComponent<Props, State> {
         }, loadInterval);
       }
     }
+
+ */
   }
 
   private scrollDown = () => {

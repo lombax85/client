@@ -5,6 +5,7 @@ import * as Container from '../../../util/container'
 import * as Types from '../../../constants/types/chat2'
 import ListComponent from '.'
 import throttle from 'lodash/throttle'
+import {numberToMessageID} from "../../../constants/types/chat2";
 
 type OwnProps = {
   conversationIDKey: Types.ConversationIDKey
@@ -28,52 +29,68 @@ const throttledLoadOlder = throttle(
   1000
 )
 
-export default Container.connect(
-  (state, {conversationIDKey}: OwnProps) => {
-    const messageOrdinals = Constants.getMessageOrdinals(state, conversationIDKey)
-    const lastOrdinal = [...messageOrdinals].pop()
-    const maybeCenterMessage = Constants.getMessageCenterOrdinal(state, conversationIDKey)
-    const centeredOrdinal =
-      maybeCenterMessage === null || maybeCenterMessage === undefined ? undefined : maybeCenterMessage.ordinal
-    const containsLatestMessage = state.chat2.containsLatestMessageMap.get(conversationIDKey) || false
-    let lastMessageIsOurs = false
-    if (lastOrdinal) {
-      const m = Constants.getMessage(state, conversationIDKey, lastOrdinal)
-      lastMessageIsOurs = !!m && m.author === state.config.username
-    }
+const throttledLoadExample = throttle(
+    (dispatch: Container.TypedDispatch, conversationIDKey: Types.ConversationIDKey) => {
 
-    return {
-      centeredOrdinal,
-      containsLatestMessage,
-      conversationIDKey,
-      editingOrdinal: state.chat2.editingMap.get(conversationIDKey),
-      lastMessageIsOurs,
-      messageOrdinals,
-    }
-  },
-  (dispatch, {conversationIDKey}: OwnProps) => ({
-    copyToClipboard: (text: string) => dispatch(ConfigGen.createCopyToClipboard({text})),
-    loadNewerMessages: () => throttledLoadNewer(dispatch, conversationIDKey),
-    loadOlderMessages: () => throttledLoadOlder(dispatch, conversationIDKey),
-    markInitiallyLoadedThreadAsRead: () =>
-      dispatch(Chat2Gen.createMarkInitiallyLoadedThreadAsRead({conversationIDKey})),
-    onJumpToRecent: () => dispatch(Chat2Gen.createJumpToRecent({conversationIDKey})),
-  }),
-  (stateProps, dispatchProps, ownProps: OwnProps) => ({
-    centeredOrdinal: stateProps.centeredOrdinal,
-    containsLatestMessage: stateProps.containsLatestMessage,
-    conversationIDKey: stateProps.conversationIDKey,
-    copyToClipboard: dispatchProps.copyToClipboard,
-    editingOrdinal: stateProps.editingOrdinal,
-    lastMessageIsOurs: stateProps.lastMessageIsOurs,
-    loadNewerMessages: dispatchProps.loadNewerMessages,
-    loadOlderMessages: dispatchProps.loadOlderMessages,
-    markInitiallyLoadedThreadAsRead: dispatchProps.markInitiallyLoadedThreadAsRead,
-    messageOrdinals: [...stateProps.messageOrdinals],
-    onFocusInput: ownProps.onFocusInput,
-    onJumpToRecent: dispatchProps.onJumpToRecent,
-    scrollListDownCounter: ownProps.scrollListDownCounter,
-    scrollListToBottomCounter: ownProps.scrollListToBottomCounter,
-    scrollListUpCounter: ownProps.scrollListUpCounter,
-  })
+        const id: Types.MessageID = numberToMessageID(4388);
+        console.log('scrollToUnread')
+        dispatch(
+            Chat2Gen.createReplyJump({
+              conversationIDKey: conversationIDKey,
+              messageID: id,
+            }))
+    },
+1000
+)
+
+export default Container.connect(
+(state, {conversationIDKey}: OwnProps) => {
+const messageOrdinals = Constants.getMessageOrdinals(state, conversationIDKey)
+const lastOrdinal = [...messageOrdinals].pop()
+const maybeCenterMessage = Constants.getMessageCenterOrdinal(state, conversationIDKey)
+const centeredOrdinal =
+  maybeCenterMessage === null || maybeCenterMessage === undefined ? undefined : maybeCenterMessage.ordinal
+const containsLatestMessage = state.chat2.containsLatestMessageMap.get(conversationIDKey) || false
+let lastMessageIsOurs = false
+if (lastOrdinal) {
+  const m = Constants.getMessage(state, conversationIDKey, lastOrdinal)
+  lastMessageIsOurs = !!m && m.author === state.config.username
+}
+
+return {
+  centeredOrdinal,
+  containsLatestMessage,
+  conversationIDKey,
+  editingOrdinal: state.chat2.editingMap.get(conversationIDKey),
+  lastMessageIsOurs,
+  messageOrdinals,
+}
+},
+(dispatch, {conversationIDKey}: OwnProps) => ({
+copyToClipboard: (text: string) => dispatch(ConfigGen.createCopyToClipboard({text})),
+loadExample: () => throttledLoadExample(dispatch, conversationIDKey),
+loadNewerMessages: () => throttledLoadNewer(dispatch, conversationIDKey),
+loadOlderMessages: () => throttledLoadOlder(dispatch, conversationIDKey),
+markInitiallyLoadedThreadAsRead: () =>
+  dispatch(Chat2Gen.createMarkInitiallyLoadedThreadAsRead({conversationIDKey})),
+onJumpToRecent: () => dispatch(Chat2Gen.createJumpToRecent({conversationIDKey})),
+}),
+(stateProps, dispatchProps, ownProps: OwnProps) => ({
+centeredOrdinal: stateProps.centeredOrdinal,
+containsLatestMessage: stateProps.containsLatestMessage,
+conversationIDKey: stateProps.conversationIDKey,
+copyToClipboard: dispatchProps.copyToClipboard,
+editingOrdinal: stateProps.editingOrdinal,
+lastMessageIsOurs: stateProps.lastMessageIsOurs,
+  loadExample: dispatchProps.loadExample,
+loadNewerMessages: dispatchProps.loadNewerMessages,
+loadOlderMessages: dispatchProps.loadOlderMessages,
+markInitiallyLoadedThreadAsRead: dispatchProps.markInitiallyLoadedThreadAsRead,
+messageOrdinals: [...stateProps.messageOrdinals],
+onFocusInput: ownProps.onFocusInput,
+onJumpToRecent: dispatchProps.onJumpToRecent,
+scrollListDownCounter: ownProps.scrollListDownCounter,
+scrollListToBottomCounter: ownProps.scrollListToBottomCounter,
+scrollListUpCounter: ownProps.scrollListUpCounter,
+})
 )(ListComponent)
