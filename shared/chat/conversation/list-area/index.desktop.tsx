@@ -145,7 +145,7 @@ class Thread extends React.PureComponent<Props, State> {
 
 
   private scrollToUnread = () => {
-    this.props.loadLastUnread()
+    this.props.loadLastUnreadMessage()
 
     return;
   }
@@ -519,6 +519,8 @@ class Thread extends React.PureComponent<Props, State> {
     const debugInfo = debug ? (
       <div>Debug info: {this.isLockedToBottom() ? 'Locked to bottom' : 'Not locked to bottom'}</div>
     ) : null
+    
+    const lastUnread = (this.props.lastUnreadMessageID !== this.props.lastMessageID) ? (<UnreadShortcut onClick={this.scrollToUnread}/>) : null
 
     return (
       <ErrorBoundary>
@@ -530,7 +532,8 @@ class Thread extends React.PureComponent<Props, State> {
               {items}
             </div>
           </div>
-          <UnreadShortcut onClick={this.scrollToUnread}/>
+          {lastUnread}
+
           {!this.props.containsLatestMessage && this.props.messageOrdinals.length > 0 && (
             <JumpToRecent onClick={this.jumpToRecent} style={styles.jumpToRecent} />
           )}

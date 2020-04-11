@@ -17,7 +17,7 @@ const UnreadShortcut = (props: Props) => (
     >
       <Kb.Icon type="iconfont-arrow-up" sizeType="Small" color={Styles.globalColors.white} />
       <Kb.Text negative={true} type="BodySmallSemibold">
-        Scroll to first unread
+        Scroll to last read
       </Kb.Text>
     </Kb.Box2>
   </Kb.ClickableBox>
