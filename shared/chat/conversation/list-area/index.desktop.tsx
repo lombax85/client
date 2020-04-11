@@ -536,6 +536,8 @@ class Thread extends React.PureComponent<Props, State> {
     const lastUnread = (this.props.lastUnreadMessageID !== this.props.lastMessageID && this.showLastReadBox === true) ?
         (<JumpToLastRead onClick={this.scrollToUnread} style={styles.jumpToLastRead}/>) : null
 
+    if (!lastUnread) this.showLastReadBox = false
+
     return (
       <ErrorBoundary>
         {debugInfo}
