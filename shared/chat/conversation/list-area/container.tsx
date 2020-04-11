@@ -5,7 +5,6 @@ import * as Container from '../../../util/container'
 import * as Types from '../../../constants/types/chat2'
 import ListComponent from '.'
 import throttle from 'lodash/throttle'
-import {numberToMessageID} from "../../../constants/types/chat2";
 
 type OwnProps = {
   conversationIDKey: Types.ConversationIDKey
@@ -29,24 +28,24 @@ const throttledLoadOlder = throttle(
   1000
 )
 
-const throttledLoadExample = throttle(
-    (dispatch: Container.TypedDispatch, conversationIDKey: Types.ConversationIDKey) => {
-
-        const id: Types.MessageID = numberToMessageID(4388);
-        console.log('scrollToUnread')
+const throttledJumpToUnread = throttle(
+    (dispatch: Container.TypedDispatch, conversationIDKey: Types.ConversationIDKey, lastUnreadId?: Types.MessageID) => {
+        const id = lastUnreadId ? lastUnreadId : 0
         dispatch(
             Chat2Gen.createReplyJump({
-              conversationIDKey: conversationIDKey,
-              messageID: id,
+                conversationIDKey: conversationIDKey,
+                messageID: id,
             }))
     },
-1000
+    1000
 )
+
 
 export default Container.connect(
 (state, {conversationIDKey}: OwnProps) => {
 const messageOrdinals = Constants.getMessageOrdinals(state, conversationIDKey)
 const lastOrdinal = [...messageOrdinals].pop()
+const lastMessageID = state.chat2.metaMap.get(conversationIDKey)?.readMsgID
 const maybeCenterMessage = Constants.getMessageCenterOrdinal(state, conversationIDKey)
 const centeredOrdinal =
   maybeCenterMessage === null || maybeCenterMessage === undefined ? undefined : maybeCenterMessage.ordinal
@@ -62,13 +61,14 @@ return {
   containsLatestMessage,
   conversationIDKey,
   editingOrdinal: state.chat2.editingMap.get(conversationIDKey),
+  lastMessageID,
   lastMessageIsOurs,
   messageOrdinals,
 }
 },
 (dispatch, {conversationIDKey}: OwnProps) => ({
 copyToClipboard: (text: string) => dispatch(ConfigGen.createCopyToClipboard({text})),
-loadExample: () => throttledLoadExample(dispatch, conversationIDKey),
+loadLastUnread: (lastUnreadId?: Types.MessageID) => throttledJumpToUnread(dispatch, conversationIDKey, lastUnreadId),
 loadNewerMessages: () => throttledLoadNewer(dispatch, conversationIDKey),
 loadOlderMessages: () => throttledLoadOlder(dispatch, conversationIDKey),
 markInitiallyLoadedThreadAsRead: () =>
@@ -82,7 +82,7 @@ conversationIDKey: stateProps.conversationIDKey,
 copyToClipboard: dispatchProps.copyToClipboard,
 editingOrdinal: stateProps.editingOrdinal,
 lastMessageIsOurs: stateProps.lastMessageIsOurs,
-  loadExample: dispatchProps.loadExample,
+loadLastUnread: () => dispatchProps.loadLastUnread(stateProps?.lastMessageID),
 loadNewerMessages: dispatchProps.loadNewerMessages,
 loadOlderMessages: dispatchProps.loadOlderMessages,
 markInitiallyLoadedThreadAsRead: dispatchProps.markInitiallyLoadedThreadAsRead,

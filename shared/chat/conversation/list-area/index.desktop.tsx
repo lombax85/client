@@ -22,7 +22,6 @@ import chunk from 'lodash/chunk'
 import {globalMargins} from '../../../styles/shared'
 import {memoize} from '../../../util/memoize'
 import UnreadShortcut from './unread-shortcut'
-import {numberToMessageID} from "../../../constants/types/chat2";
 
 // hot reload isn't supported with debouncing currently so just ignore hot here
 if (module.hot) {
@@ -146,41 +145,9 @@ class Thread extends React.PureComponent<Props, State> {
 
 
   private scrollToUnread = () => {
-    console.log('scrollToUnread')
-    this.props.loadExample()
+    this.props.loadLastUnread()
 
     return;
-/*
-    console.log('here')
-    const list = this.listRef.current
-    if (list) {
-      const maxAttempts = 20;
-      const loadInterval = 500;
-      var attempts = 0;
-
-      const scrollWaypoint = list.querySelectorAll(`[data-key=scrollToFirst]`)
-      if (scrollWaypoint.length > 0) {
-        scrollWaypoint[0].scrollIntoView({block: 'center', inline: 'nearest'})
-      } else {
-        var interval = setInterval(() => {
-          // grab the waypoint we made for the centered ordinal and scroll to it
-          const scrollWaypoint = list.querySelectorAll(`[data-key=scrollToFirst]`)
-          if (scrollWaypoint.length > 0) {
-            scrollWaypoint[0].scrollIntoView({block: 'center', inline: 'nearest'})
-            clearInterval(interval);
-          } else {
-            if (attempts >= maxAttempts) {
-              clearInterval(interval);
-              console.log('Max Attempts reached')
-            }
-            this.props.loadOlderMessages();
-            attempts++;
-          }
-        }, loadInterval);
-      }
-    }
-
- */
   }
 
   private scrollDown = () => {

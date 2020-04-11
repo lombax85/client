@@ -10,7 +10,7 @@ export type Props = {
   copyToClipboard: (arg0: string) => void
   editingOrdinal?: Types.Ordinal
   lastMessageIsOurs: boolean
-  loadExample: (ordinal?: Types.Ordinal | null) => void
+  loadLastUnread: (ordinal?: Types.Ordinal | null) => void
   loadNewerMessages: (ordinal?: Types.Ordinal | null) => void
   loadOlderMessages: (ordinal?: Types.Ordinal | null) => void
   markInitiallyLoadedThreadAsRead: () => void
